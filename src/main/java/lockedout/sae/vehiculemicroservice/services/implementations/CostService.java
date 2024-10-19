@@ -28,7 +28,7 @@ public class CostService implements ICostService {
     @Override
     public Cost getCostById(int costId) {
         Optional<Cost> cost = costRepository.findById((long) costId);
-        return cost.orElse(null);  // Return null if cost is not found
+        return cost.orElse(null);
     }
 
     @Override
@@ -36,8 +36,11 @@ public class CostService implements ICostService {
         return costRepository.findById(costId)
                 .map(existingCost -> {
                     existingCost.setAmount(cost.getAmount());
-                    existingCost.setDescription(cost.getDescription());
+                    existingCost.setCostType(cost.getCostType());
                     existingCost.setCostDate(cost.getCostDate());
+                    existingCost.setDescription(cost.getDescription());
+                    existingCost.setVendor(cost.getVendor());
+                    existingCost.setPaymentMethod(cost.getPaymentMethod());
                     return costRepository.save(existingCost);
                 }).orElse(null);
     }
