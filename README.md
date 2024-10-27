@@ -74,13 +74,9 @@ The project uses Keycloak for managing users, roles, and authentication. The API
 
 ## Getting Started
 ### Prerequisites
-- Java 11+
+- Java 17+
 - Python 3.8+
 - MySQL
 - Docker (optional, for containerization)
 - Keycloak server
 
-### Steps
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
