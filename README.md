@@ -16,7 +16,7 @@ This repository contains a microservices-based application for managing vehicles
 ## Architecture
 The system follows a microservices architecture, with each service handling a specific domain, such as vehicles, trips, costs, maintenance, and documents. The services communicate through REST APIs and are registered with Eureka for discovery.
 
-![Class Diagram](path/to/diagram-image.png) <!-- Update with the actual path to the diagram image in your repo -->
+![Class Diagram](https://github.com/mohamedTaamallah/SW_LockedOut_5SAE2/blob/main/image_2024-10-27_172620407.png) <!-- Update with the actual path to the diagram image in your repo -->
 
 ### Main Components:
 - **Vehicle Service**: Manages vehicle details.
