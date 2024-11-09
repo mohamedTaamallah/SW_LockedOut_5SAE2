@@ -1,60 +1,43 @@
 package lockedout.sae.vehiculemicroservice.controllers;
 
-import java.util.List;
-
+import lockedout.sae.vehiculemicroservice.entities.Vehicle;
+import lockedout.sae.vehiculemicroservice.implementation.services.VehicleImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import lockedout.sae.vehiculemicroservice.entities.Vehicle;
-import lockedout.sae.vehiculemicroservice.implementation.interfaces.IVehicleImp;
+import java.util.List;
 
 @RestController
-@RequestMapping("/vehicleController")
+@RequestMapping("/vehicles")
 public class VehicleController {
 
-
-
     @Autowired
-    private IVehicleImp vehicleService;
+    private VehicleImp vehicleService;
 
-    // Add a new vehicle
-    @PostMapping("/addVehicle")
+    @PostMapping
     public ResponseEntity<Vehicle> addVehicle(@RequestBody Vehicle vehicle) {
-        return ResponseEntity.ok(this.vehicleService.addVehicle(vehicle));
+        return ResponseEntity.ok(vehicleService.addVehicle(vehicle));
     }
 
-    // Get vehicle by ID
-    @GetMapping("/getVehicleById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
-        return ResponseEntity.ok(this.vehicleService.getVehicleById(id));
+        return ResponseEntity.ok(vehicleService.getVehicleById(id));
     }
 
-    // Update an existing vehicle
-    @PutMapping("/updateVehicle/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Vehicle> updateVehicle(@PathVariable Long id, @RequestBody Vehicle vehicle) {
-        return ResponseEntity.ok(this.vehicleService.updateVehicle(id,vehicle));
-
+        return ResponseEntity.ok(vehicleService.updateVehicle(id, vehicle));
     }
 
-    // Delete a vehicle by ID
-    @DeleteMapping("/deleteVehicle/{id}")
-    public ResponseEntity<Vehicle> deleteVehicle(@PathVariable Long id) {
-        return ResponseEntity.ok(this.vehicleService.deleteVehicle(id));
-
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
+        vehicleService.deleteVehicle(id);
+        return ResponseEntity.noContent().build();
     }
 
-    // Find vehicle by registration number
-    @GetMapping("/findByRegistrationNumber/{registrationNumber}")
-    public ResponseEntity<Vehicle> findByRegistrationNumber(@PathVariable String registrationNumber) {
-        return ResponseEntity.ok(this.vehicleService.findByRegistrationNumber(registrationNumber));
-
-    }
-    
-    // Optional: Get all vehicles (if you want to list them)
-    @GetMapping("/getAllVehicles")
-    public ResponseEntity<List<Vehicle>> getAllVehicles() {
-        return ResponseEntity.ok(this.vehicleService.getAllVehicles());
-
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<Vehicle>> getAllVehicles(@PathVariable Long id) {
+        return ResponseEntity.ok(vehicleService.getAllVehicles(id));
     }
 }

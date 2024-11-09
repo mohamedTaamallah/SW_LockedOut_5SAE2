@@ -15,7 +15,7 @@ public class Vehicle {
 
     @Id
     @GeneratedValue
-    private Long VehicleId;
+    private Long vehicleId;
     private String registrationNumber;
     private float mileage;
     private String brand;
@@ -24,5 +24,5 @@ public class Vehicle {
     private VehicleType type;
     private float fuelCapacity;
     private float averageConsumption;
-
+    private Long userId;
 }
