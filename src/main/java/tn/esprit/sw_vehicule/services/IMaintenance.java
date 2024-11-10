@@ -5,10 +5,9 @@ import tn.esprit.sw_vehicule.entities.Maintenance;
 import java.util.List;
 
 public interface IMaintenance {
-    public Maintenance addMaintenance(Maintenance maintenance);
-    public Maintenance updateMaintenance (Maintenance maintenance);
-    public List<Maintenance> getAllMaintenance();
-    public Maintenance getMaintenanceById( long idM);
-    public void deleteMaintenance(long idM);
-
+    Maintenance addMaintenance(Maintenance maintenance);
+    Maintenance getMaintenanceById(Long maintenanceId);
+    List<Maintenance> getAllMaintenanceForVehicle(Long vehicleId);
+    Maintenance updateMaintenance(Long maintenanceId, Maintenance maintenance);
+    void deleteMaintenance(Long maintenanceId);
 }
