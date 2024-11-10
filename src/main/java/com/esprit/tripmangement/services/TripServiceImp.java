@@ -2,40 +2,49 @@ package com.esprit.tripmangement.services;
 
 import com.esprit.tripmangement.entities.Trip;
 import com.esprit.tripmangement.repositories.TripRepository;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
-public class TripServiceImp implements ITrip{
+public class TripServiceImp {
 
+    @Autowired
     private TripRepository tripRepository;
 
-    @Override
-    public Trip addTrip(Trip trip) {
-        return tripRepository.save(trip);
-    }
-
-    @Override
-    public Trip updateTrip(Trip trip) {
-        return tripRepository.save(trip);
-    }
-
-    @Override
     public List<Trip> getAllTrips() {
         return tripRepository.findAll();
     }
 
-    @Override
     public Trip getTripById(Long id) {
         return tripRepository.findById(id).orElse(null);
     }
 
-    @Override
+    public Trip addTrip(Trip trip) {
+        return tripRepository.save(trip);
+    }
+
+    public Trip updateTrip(Long id, Trip tripDetails) {
+        Trip trip = tripRepository.findById(id).orElse(null);
+        if (trip != null) {
+            trip.setTripDate(tripDetails.getTripDate());
+            trip.setDistance(tripDetails.getDistance());
+            trip.setStartingPoint(tripDetails.getStartingPoint());
+            trip.setDestination(tripDetails.getDestination());
+            trip.setDuration(tripDetails.getDuration());
+            trip.setFuelUsed(tripDetails.getFuelUsed());
+            trip.setDescription(tripDetails.getDescription());
+            return tripRepository.save(trip);
+        }
+        return null;
+    }
+
     public void deleteTrip(Long id) {
         tripRepository.deleteById(id);
+    }
 
+    public List<Trip> getTripsByVehicleId(Long vehicleId) {
+        return tripRepository.findByVehicleId(vehicleId);
     }
 }

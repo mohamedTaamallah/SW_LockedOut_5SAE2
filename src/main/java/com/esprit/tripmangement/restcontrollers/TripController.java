@@ -1,41 +1,53 @@
 package com.esprit.tripmangement.restcontrollers;
 
 import com.esprit.tripmangement.entities.Trip;
-import com.esprit.tripmangement.services.ITrip;
-import lombok.AllArgsConstructor;
+import com.esprit.tripmangement.services.TripServiceImp;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
-@RequestMapping("/api/trips")
+@RequestMapping("/trips")
 public class TripController {
 
-    private final ITrip tripService;
+    @Autowired
+    private TripServiceImp tripService;
 
-    @PostMapping("/addTrip")
-    public Trip addTrip(@RequestBody Trip trip) {
-        return tripService.addTrip(trip);
-    }
-
-    @PutMapping("/updateTrip")
-    public Trip updateTrip(@RequestBody Trip trip) {
-        return tripService.updateTrip(trip);
-    }
-
-    @GetMapping("/getAllTrips")
+    @GetMapping
     public List<Trip> getAllTrips() {
         return tripService.getAllTrips();
     }
 
-    @GetMapping("/getTrip/{id}")
-    public Trip getTripById(@PathVariable Long id) {
-        return tripService.getTripById(id);
+    @GetMapping("/{id}")
+    public ResponseEntity<Trip> getTripById(@PathVariable Long id) {
+        Trip trip = tripService.getTripById(id);
+        return trip != null ? ResponseEntity.ok(trip) : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/deleteTrip/{id}")
-    public void deleteTrip(@PathVariable Long id) {
+    @PostMapping
+    public ResponseEntity<Trip> addTrip(@RequestBody Trip trip) {
+        Trip createdTrip = tripService.addTrip(trip);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTrip);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Trip> updateTrip(@PathVariable Long id, @RequestBody Trip tripDetails) {
+        Trip updatedTrip = tripService.updateTrip(id, tripDetails);
+        return updatedTrip != null ? ResponseEntity.ok(updatedTrip) : ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable Long id) {
         tripService.deleteTrip(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/vehicle/{vehicleId}")
+    public ResponseEntity<List<Trip>> getTripsByVehicleId(@PathVariable Long vehicleId) {
+        List<Trip> trips = tripService.getTripsByVehicleId(vehicleId);
+        return ResponseEntity.ok(trips);
     }
 }

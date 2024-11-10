@@ -18,9 +18,10 @@ import java.time.LocalDate;
 @Setter
 @Entity
 public class Trip implements Serializable {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tripId;
+    private Long vehicleId;
     private LocalDate tripDate;
     private Float distance;
     private String startingPoint;
