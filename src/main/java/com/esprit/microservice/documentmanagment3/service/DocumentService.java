@@ -21,7 +21,7 @@ public class DocumentService {
         return documentRepository.findById(id).orElse(null);
     }
 
-    public Document createDocument(Document document) {
+    public Document addDocument(Document document) {
         return documentRepository.save(document);
     }
 
@@ -43,5 +43,9 @@ public class DocumentService {
 
     public void deleteDocument(Long id) {
         documentRepository.deleteById(id);
+    }
+
+    public List<Document> getDocumentsByVehicleId(Long vehicleId) {
+        return documentRepository.findByVehicleId(vehicleId);
     }
 }

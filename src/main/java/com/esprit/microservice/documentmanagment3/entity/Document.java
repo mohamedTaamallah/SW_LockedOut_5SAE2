@@ -1,17 +1,25 @@
 package com.esprit.microservice.documentmanagment3.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "documents")
 public class Document {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long documentId;
-
+    private Long vehicleId;
 
 
     @Enumerated(EnumType.STRING)
@@ -25,53 +33,4 @@ public class Document {
 
     private String issuingOrganization;
 
-    // Getters and setters
-    public Long getDocumentId() {
-        return documentId;
-    }
-
-    public void setDocumentId(Long documentId) {
-        this.documentId = documentId;
-    }
-
-
-    public DocumentType getDocumentType() {
-        return documentType;
-    }
-
-    public void setDocumentType(DocumentType documentType) {
-        this.documentType = documentType;
-    }
-
-    public LocalDate getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate) {
-        this.expirationDate = expirationDate;
-    }
-
-    public LocalDate getRenewalDate() {
-        return renewalDate;
-    }
-
-    public void setRenewalDate(LocalDate renewalDate) {
-        this.renewalDate = renewalDate;
-    }
-
-    public String getDocumentFile() {
-        return documentFile;
-    }
-
-    public void setDocumentFile(String documentFile) {
-        this.documentFile = documentFile;
-    }
-
-    public String getIssuingOrganization() {
-        return issuingOrganization;
-    }
-
-    public void setIssuingOrganization(String issuingOrganization) {
-        this.issuingOrganization = issuingOrganization;
-    }
 }
