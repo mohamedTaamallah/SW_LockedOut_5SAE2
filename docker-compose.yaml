@@ -1,0 +1,193 @@
+version: '3.9'
+
+services:
+  cost:
+    build: ./SW_LockedOut_5SAE2
+    image: baharojbi/cost:latest
+    container_name: costcontainer
+    ports:
+      - "8075:8075"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/CostServiceDB?createDatabaseIfNotExist=true&useUnicode=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - eureka-server
+      - db-mysql
+    restart: on-failure
+
+  vehicle:
+    build: ./Mohamed_T/SW_LockedOut_5SAE2
+    image: baharojbi/vehicle:latest
+    container_name: vehiclecontainer
+    ports:
+      - "8076:8076"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/VehicleServiceDB?createDatabaseIfNotExist=true&useUnicode=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - eureka-server
+      - db-mysql
+    restart: on-failure
+
+  document:
+    build: ./Ali/SW_LockedOut_5SAE2
+    image: baharojbi/document:latest
+    container_name: documentcontainer
+    ports:
+      - "8078:8078"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db-mysql:3306/DocumentServiceDB?createDatabaseIfNotExist=true&useUnicode=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    depends_on:
+      - eureka-server
+      - db-mysql
+    restart: on-failure
+
+  trip:
+    build: ./Hamza/SW_LockedOut_5SAE2
+    image: baharojbi/trip:latest
+    container_name: tripcontainer
+    ports:
+      - "8077:8077"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    restart: on-failure
+
+  maintenance:
+    build: ./Yassinee/SW_LockedOut_5SAE2
+    image: baharojbi/maintenance:latest
+    container_name: maintenancecontainer
+    ports:
+      - "8079:8079"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+
+  config-server:
+    build: ./ConfigServProject
+    image: baharojbi/config-server:latest
+    container_name: configservercontainer
+    ports:
+      - "8777:8777"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+
+  api-gateway:
+    build: ./Gateway
+    image: baharojbi/api-gateway:latest
+    container_name: gatewaycontainer
+    ports:
+      - "8093:8093"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+      - cost
+
+  eureka-server:
+    build: ./Eureka
+    image: baharojbi/eureka:latest
+    container_name: eurekacontainer
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+
+  db-mysql:
+    container_name: db-mysql
+    image: mysql:8.0.27
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+      - ./db_init:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: db-mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    ports:
+      - 8082:80
+    depends_on:
+      - db-mysql
+    restart: unless-stopped
+
+  db-postgres:
+    image: postgres:13
+    container_name: django_postgres
+    environment:
+      POSTGRES_DB: backend_Django_SW
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./db_init:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+  django-app:
+    build: ./Sw_backend_Django
+    container_name: djangoapp
+    image: baharojbi/django-app:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_ALLOWED_HOSTS=localhost
+      - POSTGRES_DB=backend_Django_SW
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_HOST=db-postgres
+      - POSTGRES_PORT=5432
+    depends_on:
+      - db-postgres
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db-postgres
+    volumes:
+      - ./pgadmin_servers.json:/pgadmin4/servers.json
+    restart: unless-stopped
+
+  front-sw:
+    build: ./FrontEnd_SW_LockedOut
+    image: baharojbi/front-sw:latest
+    container_name: frontsw
+    
+    ports:
+      - "4200:80"  # Maps host port 4200 to container port 80
+    volumes:
+      - ./dist/fuse:/usr/share/nginx/html
+    restart: on-failure
+
+
+volumes:
+  mysql-data:
+  postgres-data:
